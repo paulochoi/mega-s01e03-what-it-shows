@@ -2,19 +2,20 @@
   import reports from '#lib/data/reports-4471.json';
   import { uniqueById, type Report } from '#lib/kb/causes';
   import { tenantOf } from '#lib/kb/locales';
-  import { PROBLEMS, problemOf } from '#lib/kb/problems';
+  import { PROBLEMS, inProblem } from '#lib/kb/problems';
 
   let { ticket, repo }: { ticket: number; repo: string } = $props();
 
   const rows = (reports as Report[]).filter((r) => r.mergedInto === ticket);
   const merged = uniqueById(rows);
   const groups = PROBLEMS.map((p) => {
-    const rs = merged.filter((r) => problemOf(r, tenantOf(r)) === p.id);
+    const rs = merged.filter((r) => inProblem(p.id, r, tenantOf(r)));
     const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();
     const tags: Record<string, number> = {};
     for (const r of rs) tags[r.meta.intakeTag] = (tags[r.meta.intakeTag] ?? 0) + 1;
     return { ...p, count: rs.length, tenants: new Set(rs.map((r) => r.tenant)).size, first: days[0], last: days.at(-1), tags };
   }).filter((g) => g.count > 0);
+  const oneDayUnder = merged.filter((r) => inProblem('one-day', r, tenantOf(r)) && inProblem('parser', r, tenantOf(r))).length;
   const tagged = (t: Record<string, number>) => Object.entries(t).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k} ×${n}`).join(' · ');
 </script>
 
@@ -33,13 +34,17 @@
         <td>{g.tenants}</td>
         <td>{g.first} → {g.last}</td>
         <td class="tags">{tagged(g.tags)}</td>
-        <td>{#if g.issue}<a href="https://github.com/{repo}/issues/{g.issue}">#{g.issue}</a>{:else}none{/if}</td>
+        <td><a href="https://github.com/{repo}/issues/{g.issue}">#{g.issue}</a></td>
       </tr>
     {/each}
   </tbody>
 </table>
 
+{#if oneDayUnder}
+  <p class="note">The desk counts by cause, so the {oneDayUnder} one-day reports are also in the <code>parser</code> count, where it files them by tenant.</p>
+{/if}
+
 <style>
   .sum { font-size: 1.1rem; }
-  .what, .tags { color: var(--muted); font-size: 0.85em; }
+  .what, .tags, .note { color: var(--muted); font-size: 0.85em; }
 </style>
