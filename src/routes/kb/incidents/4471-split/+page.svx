@@ -1,0 +1,41 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: paulochoi
+status: proposed
+reviewed: 2026-10-28
+signature: v1.eyJzdWIiOiI5NjIiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzIzNTQyMCwiZXhwIjoxNzkzMzIxODIwfQ.bxLucJ_HbGjTOVSe4mCFFOwVJDSm495OQ4sJzTPHVmU
+---
+
+<script>
+  import ProblemSplit from '#lib/kb/ProblemSplit.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) was merged on subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject))
+and marked known: one bug, one fix queued. Read report by report, it holds three problems. Each now
+has a ticket of its own in the [tracker](https://github.com/paulochoi/mega-s01e03-what-it-shows/issues).
+
+## The split
+
+<ProblemSplit ticket={4471} repo="paulochoi/mega-s01e03-what-it-shows" />
+
+## How each report was placed
+
+1. **Duplicates first.** The ticket system exports in overlapping pages, so some reports come twice. One id, one report.
+2. **Tenant, not intake tag.** Intake tags a report from the reporter's browser. The cause depends on the tenant's locale and booking form (`causes.ts`), so the tag is shown but not used.
+3. **Read the body.** A swapped day and month is the parser or the form hint. A date one day off, or a meeting that lands on different days in Lisbon and Toronto, is neither. The desk had already read those reports as one-day moves (`desk-notes.json`); this page gives them their own problem instead of a footnote under the parser.
+
+<Callout kind="warn">
+The parser fix queued for #4471 will not close the other two. The booking-v3 hint keeps
+producing month-first input, and a one-day shift is a time-zone bug, not a date-order bug.
+</Callout>
+
+## What changes for the desk
+
+- Keep #4471 for the parser problem only.
+- Route new booking-v3 form reports to the hint ticket, and one-day reports to the one-day ticket.
+- A shared subject line is not a shared cause. Read the body before you merge.
+
+<RenderStamp {signature} />

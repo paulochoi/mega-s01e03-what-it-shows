@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../../../_app/immutable/entry/start.CIWagwTV.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/fruYDLqp.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/B7orVE-4.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/Cbdj2qAo.js" rel="modulepreload">
+		<link href="../../../_app/immutable/entry/app.CbTgsz2R.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/BkYfdh9H.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/BD3UdjSR.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/wnmzq4eU.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/TGQFHf5e.js" rel="modulepreload">
+		<link href="../../../_app/immutable/nodes/0.uZkZF3HD.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/ybC49tkz.js" rel="modulepreload">
+		<link href="../../../_app/immutable/nodes/5.CEOsgJFC.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/DOiuHkeS.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/DFPV7QJw.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/BxbUfnXU.js" rel="modulepreload">
+		<link href="../../../_app/immutable/chunks/iXLSwIXB.js" rel="modulepreload">
+		<!--e2jw2j--><!----><title>#4471 · three problems, not one · support kb</title>
+		<link href="../../../_app/immutable/assets/runbook.BhhgOc_n.css" rel="stylesheet">
+		<link href="../../../_app/immutable/assets/Callout.yLErXQDM.css" rel="stylesheet">
+		<link href="../../../_app/immutable/assets/5.CBAwoT1R.css" rel="stylesheet">
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents"><!--[--><!--[0--><!--[--><!--[--><div class="kb svelte-e2jw2j"><header><a class="crumb svelte-e2jw2j" href="/kb">support desk · kb</a> <h1 class="svelte-e2jw2j">#4471 · three problems, not one</h1> <p class="meta svelte-e2jw2j"><span>owner <b>paulochoi</b></span> <span class="status proposed svelte-e2jw2j">proposed</span> <span class="svelte-e2jw2j">reviewed 2026-10-28 · 1 days ago</span></p></header> <!--[-1--><!--]--> <main><p><a href="/kb/incidents/4471">#4471</a> was merged on subject line (<a href="/kb/decisions/0001-dedupe-by-subject">decision 0001</a>)
+and marked known: one bug, one fix queued. Read report by report, it holds three problems. Each now
+has a ticket of its own in the <a href="https://github.com/paulochoi/mega-s01e03-what-it-shows/issues" rel="nofollow">tracker</a>.</p> <h2>The split</h2> <p class="sum svelte-h3x27m"><strong>427</strong> rows in the export · <strong>412</strong> reports once duplicates are dropped · <strong>3</strong> problems</p> <table><thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>intake tagged</th><th>ticket</th></tr></thead><tbody><!--[--><tr><td><code>parser</code><br/><span class="what svelte-h3x27m">the shared parser reads every date month first; day-first tenants get day and month swapped</span></td><td><strong>374</strong></td><td>11</td><td>2026-04-01 → 2026-10-04</td><td class="tags svelte-h3x27m">parser ×351 · hint ×23</td><td><!--[0--><a href="https://github.com/paulochoi/mega-s01e03-what-it-shows/issues/1">#1</a><!--]--></td></tr><tr><td><code>hint</code><br/><span class="what svelte-h3x27m">booking-v3 prints MM/DD/YYYY under its date field, people type month first, the form reads it day first</span></td><td><strong>33</strong></td><td>3</td><td>2026-04-17 → 2026-09-22</td><td class="tags svelte-h3x27m">hint ×18 · parser ×15</td><td><!--[0--><a href="https://github.com/paulochoi/mega-s01e03-what-it-shows/issues/2">#2</a><!--]--></td></tr><tr><td><code>one-day</code><br/><span class="what svelte-h3x27m">the date lands one day off, or on different days for people in different time zones: not a swap</span></td><td><strong>5</strong></td><td>5</td><td>2026-04-02 → 2026-10-04</td><td class="tags svelte-h3x27m">parser ×5</td><td><!--[0--><a href="https://github.com/paulochoi/mega-s01e03-what-it-shows/issues/3">#3</a><!--]--></td></tr><!--]--></tbody></table><!----> <h2>How each report was placed</h2> <ol><li><strong>Duplicates first.</strong> The ticket system exports in overlapping pages, so some reports come twice. One id, one report.</li> <li><strong>Tenant, not intake tag.</strong> Intake tags a report from the reporter’s browser. The cause depends on the tenant’s locale and booking form (<code>causes.ts</code>), so the tag is shown but not used.</li> <li><strong>Read the body.</strong> A swapped day and month is the parser or the form hint. A date one day off, or a meeting that lands on different days in Lisbon and Toronto, is neither. The desk had already read those reports as one-day moves (<code>desk-notes.json</code>); this page gives them their own problem instead of a footnote under the parser.</li></ol> <aside class="warn svelte-17bri61"><!---->The parser fix queued for #4471 will not close the other two. The booking-v3 hint keeps
+producing month-first input, and a one-day shift is a time-zone bug, not a date-order bug.<!----></aside><!----> <h2>What changes for the desk</h2> <ul><li>Keep #4471 for the parser problem only.</li> <li>Route new booking-v3 form reports to the hint ticket, and one-day reports to the one-day ticket.</li> <li>A shared subject line is not a shared cause. Read the body before you merge.</li></ul> <!--[0--><p class="stamp svelte-1280m42">desk ref <b class="svelte-1280m42">DR-49BB-2M7M</b></p><!--]--><!----><!----></main> <footer class="svelte-e2jw2j">Pages are written by people. Tables and charts are built from data at render time.</footer></div><!--]--><!----><!--]--><!--]--> <!--[-1--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_6xw5rw = {
+						base: new URL("../../..", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("../../../_app/immutable/entry/start.CIWagwTV.js"),
+						import("../../../_app/immutable/entry/app.CbTgsz2R.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 5],
+							data: [null,null],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+  </body>
+</html>
